@@ -202,7 +202,7 @@ export default function HeaderTop() {
         <ContainerBox>
             <Row>
                 <Col className="headerTxt" md={4} xs={12}>
-                    <img src="/multisender/multisender.png" alt="" className="logo" />
+                    <img src="./multisender.png" alt="" className="logo" />
                     {/* <Image
                         src="/multisender/multisender.png"
                         alt="logo"
