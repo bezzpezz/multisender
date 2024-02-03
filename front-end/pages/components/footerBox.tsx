@@ -28,15 +28,15 @@ export default function footerBox(){
     return  <Footer>
         <Container>
             <div className="midBox">
-                <a href="https://web3camp.us" target="_blank" rel="noreferrer">
-                    <div className="lft">&copy; 2022 Web3camp.us</div>
+                <a href="https://pumpwallet.finance" target="_blank" rel="noreferrer">
+                    <div className="lft">&copy; 2024 @Crypto_Kamii</div>
                 </a>
 
                 <div>
-                    <a href="https://github.com/Web3Camp-Labs/multisender" target="_blank" rel="noreferrer">
+                    <a href="https://github.com/bezzpezz/multisender" target="_blank" rel="noreferrer">
                         <img src="./github.png" alt=""/>
                     </a>
-                    <a href="https://twitter.com/Web3Camp" target="_blank" rel="noreferrer">
+                    <a href="https://twitter.com/PumpWalletTeam" target="_blank" rel="noreferrer">
                         <img src="./Twitter.png" alt=""/>
                     </a>
                 </div>

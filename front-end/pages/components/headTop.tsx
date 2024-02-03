@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button,Dropdown } from 'react-bootstrap';
-import {ActionType} from "../api/types";
+import { Container, Row, Col, Button, Dropdown } from 'react-bootstrap';
+import { ActionType } from "../api/types";
 import ChainJson from "../api/chain.json";
-import {X} from "react-bootstrap-icons"
+import { X } from "react-bootstrap-icons"
 import Accounts from '../api/Account';
-import {useWeb3} from "../api/connect";
+import { useWeb3 } from "../api/connect";
 import styled from "styled-components";
 import ConfigJson from "../config/config.json";
+import Image from 'next/image'
 
 const ContainerBox = styled(Container)`
   .logo{
@@ -48,56 +49,56 @@ const ChainBox = styled(Dropdown)`
 const BoxRht = styled.div`
   position: relative;
 `
-interface obj{
-    name:string;
-    chain:string;
-    icon:string;
+interface obj {
+    name: string;
+    chain: string;
+    icon: string;
     rpc: string[];
     faucets: any[];
-    nativeCurrency:any;
-    infoURL:string;
-    shortName:string;
-    chainId:number;
-    networkId:number;
-    slip44:number;
-    ens:{
-        registry:string
+    nativeCurrency: any;
+    infoURL: string;
+    shortName: string;
+    chainId: number;
+    networkId: number;
+    slip44: number;
+    ens: {
+        registry: string
     }
-    explorers:any[];
+    explorers: any[];
 }
 
 export default function HeaderTop() {
-    const {dispatch,state} = useWeb3();
-    const { web3Provider,account } = state;
+    const { dispatch, state } = useWeb3();
+    const { web3Provider, account } = state;
 
     // const [accountAddress, setaccountAddress] = useState<string>('');
     const [show, setShow] = useState<boolean>(false);
-    const [chainName ,setChainName] = useState('');
-    const [avaliable ,setAvaliable] = useState(true);
-    const [chainList ,setChainList] = useState<obj[]>([]);
+    const [chainName, setChainName] = useState('');
+    const [avaliable, setAvaliable] = useState(true);
+    const [chainList, setChainList] = useState<obj[]>([]);
 
-    useEffect(()=>{
-        const getChain =  async() =>{
+    useEffect(() => {
+        const getChain = async () => {
             const { chainId } = await web3Provider.getNetwork();
-            const ChainArr = ChainJson.filter(item=>item.chainId === chainId);
+            const ChainArr = ChainJson.filter(item => item.chainId === chainId);
             setChainName(ChainArr[0]?.name);
         }
         getChain();
-    },[ web3Provider])
+    }, [web3Provider])
 
-    useEffect(()=>{
+    useEffect(() => {
         initMultiSenderAddress()
         FormatChain()
 
-    },[])
+    }, [])
 
-    const FormatChain = () =>{
-        let arr:obj[]=[];
-        ConfigJson.map((item)=>{
-           let objArr:any = ChainJson.filter((obj)=>obj.chainId === item.chainId);
-           if(objArr?.length){
-               arr = arr.concat(objArr);
-           }
+    const FormatChain = () => {
+        let arr: obj[] = [];
+        ConfigJson.map((item) => {
+            let objArr: any = ChainJson.filter((obj) => obj.chainId === item.chainId);
+            if (objArr?.length) {
+                arr = arr.concat(objArr);
+            }
         });
         setChainList(arr)
     }
@@ -105,21 +106,21 @@ export default function HeaderTop() {
     const initMultiSenderAddress = async () => {
 
         const { chainId } = await web3Provider.getNetwork();
-        const chainArr = ConfigJson.filter(item=>item.chainId === chainId);
-        if(!chainArr.length){
+        const chainArr = ConfigJson.filter(item => item.chainId === chainId);
+        if (!chainArr.length) {
             setAvaliable(false);
-        }else{
+        } else {
             setAvaliable(true);
         }
     };
 
     const connectWallet = async () => {
-        if(!avaliable)return;
+        if (!avaliable) return;
         await Accounts.accountList().then(data => {
             if (data.type === 'success') {
                 // setaccountAddress(data?.data);
                 sessionStorage.setItem("account", data?.data);
-                dispatch({type: ActionType.SET_ACCOUNT,payload:data?.data});
+                dispatch({ type: ActionType.SET_ACCOUNT, payload: data?.data });
             } else {
                 setShow(true)
             }
@@ -137,7 +138,7 @@ export default function HeaderTop() {
 
 
     useEffect(() => {
-        const { ethereum} = window as any;
+        const { ethereum } = window as any;
         ethereum.on('chainChanged', () => {
             window.location.reload();
 
@@ -150,46 +151,46 @@ export default function HeaderTop() {
         });
 
         const logInfo = sessionStorage.getItem('account');
-        if(account == null){
-            dispatch({type: ActionType.SET_ACCOUNT,payload:logInfo});
+        if (account == null) {
+            dispatch({ type: ActionType.SET_ACCOUNT, payload: logInfo });
         }
     }, []);
 
-    const logout = () =>{
-        dispatch({type: ActionType.SET_ACCOUNT,payload:null});
+    const logout = () => {
+        dispatch({ type: ActionType.SET_ACCOUNT, payload: null });
         sessionStorage.removeItem('account');
         window.location.reload();
     }
 
-    const chainChange = async(item:obj) =>{
+    const chainChange = async (item: obj) => {
         const { ethereum } = window as any;
-        const {name, chainId,chain,nativeCurrency:{symbol,decimals},rpc,explorers} = item;
-        console.log(name, chainId,chain,symbol,decimals,rpc,explorers[0].url);
-        let blkArr:string[] = [];
-        explorers.map( ex => {
+        const { name, chainId, chain, nativeCurrency: { symbol, decimals }, rpc, explorers } = item;
+        console.log(name, chainId, chain, symbol, decimals, rpc, explorers[0].url);
+        let blkArr: string[] = [];
+        explorers.map(ex => {
             blkArr.push(ex.url);
         })
-        if(chainId === 1){
+        if (chainId === 1) {
             await ethereum.request({
                 method: 'wallet_switchEthereumChain',
                 params: [{ chainId: '0x1' }],
             })
-        }else{
+        } else {
             ethereum.request({
                 method: 'wallet_addEthereumChain',
                 params: [{
-                    chainId:`0x${chainId.toString(16)}`,
-                    chainName:chain,
+                    chainId: `0x${chainId.toString(16)}`,
+                    chainName: chain,
                     nativeCurrency: {
                         name,
                         symbol,
                         decimals
                     },
-                    rpcUrls:rpc,
-                    blockExplorerUrls:blkArr
+                    rpcUrls: rpc,
+                    blockExplorerUrls: blkArr
                 }]
             })
-                .catch((error:any) => {
+                .catch((error: any) => {
                     console.log(error)
                 })
         }
@@ -201,7 +202,14 @@ export default function HeaderTop() {
         <ContainerBox>
             <Row>
                 <Col className="headerTxt" md={4} xs={12}>
-                    <img src="/multisender/multisender.png" alt="" className="logo"/>
+                    <img src="/multisender/multisender.png" alt="" className="logo" />
+                    {/* <Image
+                        src="/multisender/multisender.png"
+                        alt="logo"
+                        width={800}
+                        height={500}
+                        className="logo"
+                    /> */}
                     {/*Multisender*/}
                 </Col>
                 <Col className="headetRht" md={8} xs={12}>
@@ -215,9 +223,9 @@ export default function HeaderTop() {
 
                                     <Dropdown.Menu>
                                         {
-                                            chainList.map((item,index)=>(<Dropdown.Item key={index} onClick={()=>chainChange(item)}>
+                                            chainList.map((item, index) => (<Dropdown.Item key={index} onClick={() => chainChange(item)}>
                                                 <span>{item.name}</span>
-                                          </Dropdown.Item>))
+                                            </Dropdown.Item>))
                                         }
 
                                     </Dropdown.Menu>
@@ -230,7 +238,7 @@ export default function HeaderTop() {
 
                             {
                                 account && <AddressBox>{AddressToShow(account)}
-                                    <div className="close" onClick={()=>logout()}>
+                                    <div className="close" onClick={() => logout()}>
                                         <X />
                                     </div></AddressBox>
                             }

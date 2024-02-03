@@ -29,8 +29,8 @@ const NETWORKS = {
 
     // Main networks
     bsc: {
-        // url: "https://bsc-dataseed1.binance.org",
-        url: "https://bsc-dataseed1.defibit.io/",
+        url: "https://bsc-dataseed1.binance.org",
+        //url: "https://bsc-dataseed1.defibit.io/",
         accounts: [process.env.MAINNET_PRIVATE_KEY],
     },
 
